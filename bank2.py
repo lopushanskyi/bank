@@ -67,7 +67,7 @@ class Account:
             self.balance += transaction[1]
             print(f'{index}.\t{transaction[0]} {transaction[1]:.2f}{self.currency}. Balance: {self.balance:.2f}{self.currency}')
 
-    def transfer_list(self, transfer_amount, from_account, to_account, rate):
+    def transfer(self, transfer_amount, from_account, to_account, rate):
         if transfer_amount > 0:
             print(
                 f'You transfer {transfer_amount}{self.currency}. Rate: {rate:.2f}'
@@ -76,7 +76,6 @@ class Account:
             transaction = ('transfer funds', transfer_amount)
             from_account.append(transaction)
             transfer_amount *= rate
-            print(transfer_amount)
             transaction = ('transfer funds', abs(transfer_amount))
             to_account.append(transaction)
 
@@ -109,19 +108,12 @@ usd.get_balance()
 eur = Account('Savings Euro', currencies['EUR'], 0)
 eur.deposit(130)
 eur.deposit(120)
+usd.transfer(30, usd.operations, eur.operations, c.convert(1, 'USD', 'EUR'))
 eur.expense('alcohol', 58)
 eur.deposit(70)
 eur.deposit(52)
 eur.withdraw(34)
+eur.transfer(75, eur.operations, usd.operations, c.convert(1, 'EUR', 'USD'))
 eur.statement()
 eur.get_balance()
-
-usd.transfer_list(30,
-                  usd.operations,
-                  eur.operations,
-                  c.convert(1, 'USD', 'EUR'))
-
-eur.transfer_list()
-
 usd.statement()
-eur.statement()
