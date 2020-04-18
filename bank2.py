@@ -8,6 +8,13 @@ currencies = {
 c = CurrencyConverter()
 
 
+def negative(x):
+    """Transform positive number in negative"""
+    if x > 0:
+        x -= (x * 2)
+    return x
+
+
 class Account:
 
     def __init__(self,
@@ -32,17 +39,13 @@ class Account:
         print(f'You deposit {deposit_amount}{self.currency}')
 
     def withdraw(self, withdraw_amount):
-        if withdraw_amount > 0:
-            withdraw_amount -= (withdraw_amount * 2)
-            withdraw = ('fund withdraw', withdraw_amount)
-            self.operations.append(withdraw)
+        withdraw = ('fund withdraw', negative(withdraw_amount))
+        self.operations.append(withdraw)
         print(f'You withdraw {withdraw_amount}{self.currency}')
 
     def expense(self, category, expense_amount):
-        if expense_amount > 0:
-            expense_amount -= (expense_amount * 2)
-            expense = (category, expense_amount)
-            self.operations.append(expense)
+        expense = (category, negative(expense_amount))
+        self.operations.append(expense)
         print(f'You expense "{category}" {expense_amount}{self.currency}')
 
     def income(self, category, income_amount):
@@ -51,10 +54,9 @@ class Account:
         print(f'You income "{category}" {income_amount}{self.currency}')
 
     def delete(self, category, delete_amount):
-        if delete_amount > 0:
-            delete_amount -= (delete_amount * 2)
-        print(f'You deleted "{category}" {delete_amount}{self.currency}')
-        self.operations.remove((category, delete_amount))
+        negative(delete_amount)
+        print(f'You deleted "{category}" {negative(delete_amount)}{self.currency}')
+        self.operations.remove((category, negative(delete_amount)))
 
     def statement(self):
         index = 0
@@ -88,32 +90,3 @@ class Account:
         print('/' * 45)
         print(f'"{self.title}" balance: {self.currency}{sum(operation_list)}')
         print('/' * 45)
-
-
-usd = Account('Savings Dollar', currencies['USD'], 0)
-usd.deposit(500)
-usd.withdraw(150)
-usd.deposit(35)
-usd.withdraw(40)
-usd.expense('books', 125)
-usd.expense('eating out', 25)
-usd.income('salary', 1500)
-usd.expense('car service', 129)
-usd.expense('alcohol', 654)
-usd.deposit(333)
-usd.delete('car service', 129)
-usd.statement()
-usd.get_balance()
-
-eur = Account('Savings Euro', currencies['EUR'], 0)
-eur.deposit(130)
-eur.deposit(120)
-usd.transfer(30, usd.operations, eur.operations, c.convert(1, 'USD', 'EUR'))
-eur.expense('alcohol', 58)
-eur.deposit(70)
-eur.deposit(52)
-eur.withdraw(34)
-eur.transfer(75, eur.operations, usd.operations, c.convert(1, 'EUR', 'USD'))
-eur.statement()
-eur.get_balance()
-usd.statement()
